@@ -5,7 +5,7 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
-public class TicTacToe_Server {
+public class ServerMain {
 
     public static void main(String[] args) {
 
@@ -19,11 +19,9 @@ public class TicTacToe_Server {
 
             }
 
-            System.setProperty("java.rmi.server.codebase", "file:/home/laptop/NetBeansProjects/RMIServer/build/classes/");
-
+            System.setProperty("java.rmi.server.codebase", "file:/home/laptop/NetBeansProjects/TicTacToe_Server/build/classes/");
             System.out.println("Codebase: " + System.getProperty("java.rmi.server.codebase"));
-            //System.setProperty("java.rmi.server.hostname", "192.168.43.233");
-            System.setProperty("java.rmi.server.hostname", "localhost");
+            System.setProperty("java.rmi.server.hostname", "192.168.43.233");
 
             LocateRegistry.createRegistry(1099);
             ServerImplementation obj1 = new ServerImplementation();
@@ -31,7 +29,7 @@ public class TicTacToe_Server {
             //Naming.rebind("//192.168.43.233/ABC", obj1);
             Naming.rebind("//localhost/ABC", obj1);
 
-            System.out.println("The server is waiting ...");
+            System.out.println("The server is working ...");
 
         } catch (RemoteException | MalformedURLException e) {
 
@@ -39,5 +37,4 @@ public class TicTacToe_Server {
 
         }
     }
-
 }
