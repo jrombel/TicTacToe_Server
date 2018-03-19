@@ -21,9 +21,8 @@ public class ServerMain {
 
             System.setProperty("java.rmi.server.codebase", "file:/home/laptop/NetBeansProjects/TicTacToe_Server/build/classes/");
             System.out.println("Codebase: " + System.getProperty("java.rmi.server.codebase"));
-            System.setProperty("java.rmi.server.hostname", "192.168.43.233");
+            //System.setProperty("java.rmi.server.hostname", "192.168.43.233");
 
-            //linijka poniżej do odpalania RMIRegistry służy!
             LocateRegistry.createRegistry(1099);
             ServerImplementation obj1 = new ServerImplementation();
 
