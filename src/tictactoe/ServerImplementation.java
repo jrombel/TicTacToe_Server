@@ -13,14 +13,14 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
     // 2 - player two move
     // 3 - player one won
     // 4 - player two won
+    // 5 - dead-heat
     int playersCount = 0;
     public static int idPlayer1 = -1;
     public static int idPlayer2 = -1;
+    public static Board board = Board.getInstance();
 
     protected ServerImplementation() throws RemoteException {
-
         super();
-
     }
 
     @Override
@@ -35,6 +35,7 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
         } else if (playersCount == 1) {
             idPlayer2 = idTmp;
             playersCount++;
+            board = new Board();
             status = 1;
         } else {
             idTmp = -1;
@@ -63,33 +64,106 @@ public class ServerImplementation extends UnicastRemoteObject implements ServerI
 
     @Override
     public int checkPlayerStatus(int id) throws RemoteException {
-        if (status < 1) {
+        if (status < 1 || status == 5) {
             return status;
         } else if (id == idPlayer1) {
             return status;
+        } else if (id == idPlayer2) {
+            if (status == 1) {
+                return 2;
+            } else if (status == 2) {
+                return 1;
+            } else if (status == 3) {
+                return 4;
+            } else {
+                return 3;
+            }
         } else {
-            return status + 1;
+            return -1;
         }
     }
 
     @Override
-    public Boolean checkWhoseMove() throws RemoteException {
+    public Boolean selectField(int id, int number) throws RemoteException {
+        if (board.fields[number] == 0) {
+            if (status == 1 && id == idPlayer1) {
+                board.fields[number] = 1;
+                status = 2;
+            } else if (status == 2 && id == idPlayer2) {
+                board.fields[number] = 2;
+                status = 1;
+            }
 
-        return false;
+            //checking if there is anybody winning and setting the game status
+            if (board.fields[0] == board.fields[1] && board.fields[1] == board.fields[2]) {
+                if (board.fields[0] == 1) {
+                    status = 3;
+                } else if (board.fields[0] == 2) {
+                    status = 4;
+                }
+            } else if (board.fields[3] == board.fields[4] && board.fields[4] == board.fields[5]) {
+                if (board.fields[3] == 1) {
+                    status = 3;
+                } else if (board.fields[3] == 2) {
+                    status = 4;
+                }
+            } else if (board.fields[6] == board.fields[7] && board.fields[7] == board.fields[8]) {
+                if (board.fields[6] == 1) {
+                    status = 3;
+                } else if (board.fields[6] == 2) {
+                    status = 4;
+                }
+            } else if (board.fields[0] == board.fields[3] && board.fields[3] == board.fields[6]) {
+                if (board.fields[0] == 1) {
+                    status = 3;
+                } else if (board.fields[0] == 2) {
+                    status = 4;
+                }
+            } else if (board.fields[1] == board.fields[4] && board.fields[4] == board.fields[7]) {
+                if (board.fields[1] == 1) {
+                    status = 3;
+                } else if (board.fields[1] == 2) {
+                    status = 4;
+                }
+            } else if (board.fields[2] == board.fields[5] && board.fields[5] == board.fields[8]) {
+                if (board.fields[2] == 1) {
+                    status = 3;
+                } else if (board.fields[2] == 2) {
+                    status = 4;
+                }
+            } else if (board.fields[0] == board.fields[4] && board.fields[4] == board.fields[8]) {
+                if (board.fields[0] == 1) {
+                    status = 3;
+                } else if (board.fields[0] == 2) {
+                    status = 4;
+                }
+            } else if (board.fields[2] == board.fields[4] && board.fields[4] == board.fields[6]) {
+                if (board.fields[2] == 1) {
+                    status = 3;
+                } else if (board.fields[2] == 2) {
+                    status = 4;
+                }
+            } else {
+                Boolean noEmpty = true;
+                for (int i = 0; i < 9; i++) {
+                    if (board.fields[i] == 0) {
+                        noEmpty = false;
+                    }
+                }
+                if (noEmpty == true) {
+                    status = 5;
+                }
+            }
 
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public Board getBoard() throws RemoteException {
 
-        Board a = new Board();
-
-        return a;
-    }
-
-    @Override
-    public Boolean makeMove(Board board) throws RemoteException {
-
-        return false;
+        return board;
     }
 }
